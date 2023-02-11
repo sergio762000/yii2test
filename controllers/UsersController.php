@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\LoginForm;
 use app\models\SignupForm;
 use Yii;
 use yii\rest\ActiveController;
@@ -23,19 +24,27 @@ class UsersController extends ActiveController
             if ($user = $model->signup()) {
                 if (Yii::$app->getUser()->login($user)) {
                     return $user;
-                } else {
-                    return $this->asJson([
-                        'action' => 'Yii::$app->getUser()->login($user)',
-                        'result' => Yii::$app->getUser()->login($user)
-                    ]);
                 }
             }
 
-        } else {
-            return $this->asJson([
-                'model' => $model
-            ]);
         }
+    }
 
+    public function actionLogin()
+    {
+        $model = new LoginForm();
+        $model->load(Yii::$app->request->bodyParams, '');
+        if ($token = $model->login()) {
+            return $token;
+        } else {
+            return $model;
+        }
+    }
+
+    protected function verbs()
+    {
+        return [
+            'login' => ['post'],
+        ];
     }
 }
