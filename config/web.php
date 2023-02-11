@@ -1,5 +1,7 @@
 <?php
 
+use yii\web\Response;
+
 $params = require __DIR__ . '/params.php';
 if (file_exists(__DIR__ . '/db-local.php')) {
     $db = require __DIR__ . '/db-local.php';
@@ -23,12 +25,22 @@ $config = [
                 'application/json' => 'yii\web\JsonParser'
             ],
         ],
+        'response' => [
+            'formatters' => [
+                Response::FORMAT_JSON => [
+                    'class' => 'yii\web\JsonResponseFormatter',
+                    'prettyPrint' => YII_DEBUG,
+                    'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+                ],
+            ],
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => false,
+            'enableSession' => false
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
