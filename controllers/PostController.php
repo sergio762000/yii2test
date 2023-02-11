@@ -14,6 +14,10 @@ use yii\web\ServerErrorHttpException;
 class PostController extends ActiveController
 {
     public $modelClass = 'app\models\Post';
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
+    ];
 
     public function behaviors()
     {

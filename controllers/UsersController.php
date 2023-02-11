@@ -5,6 +5,9 @@ namespace app\controllers;
 use app\models\LoginForm;
 use app\models\SignupForm;
 use Yii;
+use yii\filters\AccessControl;
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\HttpBearerAuth;
 use yii\rest\ActiveController;
 
 class UsersController extends ActiveController
@@ -15,7 +18,31 @@ class UsersController extends ActiveController
         'collectionEnvelope' => 'items'
     ];
 
-    //TODO - регистрация пользователя
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+
+        $behaviors['authenticator']['only'] = ['view', 'index'];
+        $behaviors['authenticator']['authMethods'] = [
+            HttpBasicAuth::class,
+            HttpBearerAuth::class,
+        ];
+
+        $behaviors['access'] = [
+            'class' => AccessControl::class,
+            'only' => ['signup', 'login'],
+            'rules' => [
+                [
+                    'allow' => true,
+                    'actions' => ['signup', 'login'],
+                    'roles' => ['?'],
+                ],
+            ],
+        ];
+
+        return $behaviors;
+    }
+
     public function actionSignup()
     {
         $model = new SignupForm();
