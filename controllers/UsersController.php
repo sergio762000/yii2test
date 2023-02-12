@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\LoginForm;
 use app\models\SignupForm;
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBasicAuth;
@@ -22,7 +23,7 @@ class UsersController extends ActiveController
     {
         $behaviors = parent::behaviors();
 
-        $behaviors['authenticator']['only'] = ['view', 'index'];
+        $behaviors['authenticator']['only'] = ['create', 'update', 'delete'];
         $behaviors['authenticator']['authMethods'] = [
             HttpBasicAuth::class,
             HttpBearerAuth::class,
@@ -37,6 +38,11 @@ class UsersController extends ActiveController
                     'actions' => ['signup', 'login'],
                     'roles' => ['?'],
                 ],
+                [
+                    'allow' => true,
+                    'actions' => ['create', 'update', 'delete'],
+                    'roles' => ['@']
+                ]
             ],
         ];
 
@@ -74,6 +80,7 @@ class UsersController extends ActiveController
     {
         return [
             'login' => ['post'],
+            'delete' => ['delete']
         ];
     }
 }
