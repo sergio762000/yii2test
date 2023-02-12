@@ -49,6 +49,8 @@ class UsersController extends ActiveController
 
         if ($model->load(Yii::$app->request->post(), '')) {
             if ($user = $model->signup()) {
+                $response = Yii::$app->getResponse();
+                $response->setStatusCode(201);
                 if (Yii::$app->getUser()->login($user)) {
                     return $user;
                 }
