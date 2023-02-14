@@ -58,10 +58,16 @@ class Post extends ActiveRecord implements Linkable
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
+    public function getImage()
+    {
+        return $this->hasMany(Image::class, ['id' => 'image_id']);
+    }
+
     public function extraFields()
     {
         return [
             'author' => 'user',
+            'content_image' => 'image'
         ];
     }
 
