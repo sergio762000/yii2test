@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Post;
+use app\models\ImageForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBasicAuth;
@@ -10,6 +11,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\helpers\Url;
 use yii\rest\ActiveController;
 use yii\web\ServerErrorHttpException;
+use yii\web\UploadedFile;
 
 class PostController extends ActiveController
 {
@@ -66,5 +68,20 @@ class PostController extends ActiveController
         }
 
         return $model;
+    }
+
+    public function actionUploadImage()
+    {
+//        $postId = Yii::$app->request->getQueryParam('id');
+        $model = new ImageForm();
+
+        if (Yii::$app->request->isPost) {
+            $model->imageFile = UploadedFile::getInstanceByName('imageFile');
+            if ($model->upload()) {
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
 }
