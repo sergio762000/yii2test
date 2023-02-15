@@ -37,4 +37,5 @@ tests/_support/_generated
 
 #local settings
 config/db-local.php
-/uploads/*
+/uploads/*.*
+!/uploads/README.md
