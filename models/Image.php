@@ -3,7 +3,9 @@
 namespace app\models;
 
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 use yii\helpers\Url;
 
 /**
@@ -23,14 +25,24 @@ class Image extends ActiveRecord
 
     public function behaviors()
     {
+        parent::behaviors();
+
         return [
-            TimestampBehavior::class,
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    'beforeInsert' => ['uploaded_at'],
+                    'beforeUpdate' => ['uploaded_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
         ];
     }
 
-    public function getPosts()
+    public function getPost(): ActiveQuery
     {
-        return $this->hasMany(Post::class, ['id' => 'post_id']);
+        return $this->hasMany(Post::class, ['id' => 'post_id'])
+            ->viaTable('image_post', ['image_id' => 'id']);
     }
 
     public function getLinks()

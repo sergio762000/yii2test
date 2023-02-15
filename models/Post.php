@@ -60,7 +60,8 @@ class Post extends ActiveRecord implements Linkable
 
     public function getImage()
     {
-        return $this->hasMany(Image::class, ['id' => 'image_id']);
+        return $this->hasMany(Image::class, ['id' => 'image_id'])
+            ->viaTable('image_post', ['post_id' => 'id']);
     }
 
     public function extraFields()

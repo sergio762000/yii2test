@@ -12,6 +12,7 @@ class ImageForm extends Model
      * @var UploadedFile
      */
     public UploadedFile $imageFile;
+    public Image $imageModel;
 
     public function rules()
     {
@@ -22,11 +23,31 @@ class ImageForm extends Model
 
     public function upload()
     {
+
         if ($this->validate()) {
-            $this->imageFile->saveAs(Yii::$app->getBasePath() . '/uploads/' . $this->imageFile->baseName . '.' . $this->imageFile->extension);
-            return true;
-        } else {
-            return false;
+            if (!$this->fileExists()) {
+                $this->imageFile->saveAs(Yii::$app->getBasePath() . '/uploads/' . $this->imageFile->baseName . '.' . $this->imageFile->extension);
+                return $this->saveImageToDB();
+            } else {
+                //TODO - сделать проверку, что в БД нет информации о файле, который загрузили
+                //TODO - добавить в БД признак уникальности полного имени файла
+            }
         }
+
+        return false;
+    }
+
+    private function fileExists(): bool
+    {
+        return file_exists(Yii::$app->getBasePath() . '/uploads/' . $this->imageFile->baseName . '.' . $this->imageFile->extension);
+    }
+
+    private function saveImageToDB()
+    {
+        $image = new Image();
+        $image->name = $this->imageFile->baseName;
+        $image->filename = $this->imageFile->baseName . '.' . $this->imageFile->extension;
+
+        return $image->save() ? $image : null;
     }
 }

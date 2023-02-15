@@ -72,13 +72,16 @@ class PostController extends ActiveController
 
     public function actionUploadImage()
     {
-//        $postId = Yii::$app->request->getQueryParam('id');
-        $model = new ImageForm();
+        $postId = Yii::$app->request->getQueryParam('id');
+        $imageFormModel = new ImageForm();
+        $postModel = Post::findOne($postId);
 
         if (Yii::$app->request->isPost) {
-            $model->imageFile = UploadedFile::getInstanceByName('imageFile');
-            if ($model->upload()) {
-                return true;
+            $imageFormModel->imageFile = UploadedFile::getInstanceByName('imageFile');
+            if ($imageModel = $imageFormModel->upload()) {
+                $postModel->link('image', $imageModel);
+                $response = Yii::$app->getResponse();
+                $response->setStatusCode(201);
             }
         } else {
             return false;
